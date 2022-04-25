@@ -1,0 +1,61 @@
+:root {
+    --bg-light: #2e2d5a;
+    --bg-dark: #1b1c30;
+    --purple: #5046ba;
+    --white: #F1F5FB;
+    --white-darker: #c6c8d6;
+    --yellow: #ffc540;
+    --grey-dark: #31334c;
+    --grey: #6f7084;
+    --grey-light: #a4aab6;
+    /* Fonts */
+    --font-primary: 'Poppins', sans-serif;
+    /* Utilities */
+    --big-padding: 2rem;
+    --small-padding: 1rem;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 1.6rem;
+    line-height: 1.6;
+    font-family: var(--font-primary);
+    background-color: var(--bg-dark);
+    color: var(--white);
+}
+
+.app {}
+
+.game-board {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 30rem;
+    width: 30rem;
+    background-color: var(--bg-light);
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+}
+
+.row__position {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-light);
+    width: 100%;
+    height: 100%;
+    border: solid 1px var(--purple);
+}
