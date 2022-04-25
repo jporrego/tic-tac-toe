@@ -63,13 +63,26 @@ const gameController = (() => {
     if (e.target.textContent === "" && !isGameOver) {
       gameBoard.fillPosition(e.target, currentPlayer.marker);
       changeTurn();
-      displayController.showCurrentPlayer(currentPlayer.marker);
       checkGameOver();
+      if (!winner)
+        displayController.showCurrentPlayer(
+          currentPlayer.name,
+          currentPlayer.marker
+        );
+      else {
+        displayController.clearCurrentPlayer();
+      }
     }
   };
 
   const checkGameOver = () => {
     const winPositions = [
+      [
+        [0, 1],
+        [1, 0],
+        [1, 2],
+        [2, 1],
+      ],
       /* Row 1 */
       [
         [0, 0],
@@ -148,7 +161,6 @@ const gameController = (() => {
         if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
           isGameOver = true;
           winner = player1;
-          console.log("O wins");
         }
       }
       for (const [index, position] of xPositions.entries()) {
@@ -156,9 +168,14 @@ const gameController = (() => {
         if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
           isGameOver = true;
           winner = player2;
-          console.log("X wins");
         }
       }
+    }
+
+    let suc;
+    console.log(suc);
+    if (isGameOver) {
+      document.querySelector(".winner").textContent = `Winner: ${winner.name}`;
     }
   };
 
@@ -168,12 +185,23 @@ const gameController = (() => {
 })();
 
 const displayController = (() => {
-  const showCurrentPlayer = (currentPlayerMarker) => {
-    document.querySelector(".current-player").textContent =
-      "Player: " + currentPlayerMarker;
+  /* --- Variables --- */
+  const currentPlayerDiv = document.querySelector(".current-player");
+
+  /* --- Functions --- */
+
+  /* --- ShowCurrentPlayer --- */
+  const showCurrentPlayer = (currentPlayerName, currentPlayerMarker) => {
+    currentPlayerDiv.textContent = `${currentPlayerName}: ${currentPlayerMarker}`;
+  };
+
+  /* --- ClearCurrentPlayer --- */
+  const clearCurrentPlayer = () => {
+    currentPlayerDiv.textContent = "";
   };
   return {
     showCurrentPlayer,
+    clearCurrentPlayer,
   };
 })();
 

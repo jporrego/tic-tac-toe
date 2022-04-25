@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
 :root {
     --bg-light: #2e2d5a;
     --bg-dark: #1b1c30;
@@ -9,7 +11,7 @@
     --grey: #6f7084;
     --grey-light: #a4aab6;
     /* Fonts */
-    --font-primary: 'Poppins', sans-serif;
+    --font-primary: 'Permanent Marker', cursive;
     /* Utilities */
     --big-padding: 2rem;
     --small-padding: 1rem;
@@ -26,14 +28,20 @@ html {
 }
 
 body {
-    font-size: 1.6rem;
+    font-size: 4rem;
     line-height: 1.6;
     font-family: var(--font-primary);
     background-color: var(--bg-dark);
     color: var(--white);
 }
 
-.app {}
+.app {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
 .game-board {
     display: grid;
@@ -42,6 +50,7 @@ body {
     height: 30rem;
     width: 30rem;
     background-color: var(--bg-light);
+    user-select: none;
 }
 
 .row {
@@ -58,4 +67,14 @@ body {
     width: 100%;
     height: 100%;
     border: solid 1px var(--purple);
+    transition: all .1s ease-out;
+    cursor: pointer;
+}
+
+.row__position:hover {
+    filter: brightness(1.1);
+}
+
+.row__position:active {
+    filter: brightness(.85);
 }
