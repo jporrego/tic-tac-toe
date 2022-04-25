@@ -6,6 +6,8 @@ const gameBoard = (() => {
     ["", "", ""],
   ];
 
+  const getBoard2dArray = () => board2dArray;
+
   const renderGameBoard = () => {
     /* ----- Function to render the game board ----- 
     - Adds the corresponding coordinates to each positon
@@ -19,7 +21,6 @@ const gameBoard = (() => {
     for (const rowDiv of boardRows) {
       let col = 0;
       for (const positionDiv of rowDiv.children) {
-        // Function expression to pass the event (e) as parameter to the player.placeMarker ??
         positionDiv.addEventListener("click", gameController.placeMarker);
         positionDiv.textContent = board2dArray[row][col];
         positionDiv.dataset.row = row;
@@ -34,15 +35,17 @@ const gameBoard = (() => {
     position.textContent = marker;
   };
 
-  const test = (marker) => {};
-
   return {
     renderGameBoard,
     fillPosition,
+    getBoard2dArray,
   };
 })();
 
 const gameController = (() => {
+  let isGameOver = false;
+  let winner;
+
   const player1 = playerFactory("Player 1", "O");
   const player2 = playerFactory("Player 2", "X");
 
@@ -57,15 +60,109 @@ const gameController = (() => {
   };
 
   const placeMarker = (e) => {
-    if (e.target.textContent === "") {
+    if (e.target.textContent === "" && !isGameOver) {
       gameBoard.fillPosition(e.target, currentPlayer.marker);
       changeTurn();
       displayController.showCurrentPlayer(currentPlayer.marker);
+      checkGameOver();
+    }
+  };
+
+  const checkGameOver = () => {
+    const winPositions = [
+      /* Row 1 */
+      [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ],
+      /* Row 2 */
+      [
+        [1, 0],
+        [1, 1],
+        [1, 2],
+      ],
+      /* Row 3 */
+      [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+      ],
+      /* Column 1 */
+      [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+      ],
+      /* Column 2*/
+      [
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      /* Column 3*/
+      [
+        [0, 2],
+        [1, 2],
+        [2, 2],
+      ],
+      /* Cross Top left - Bottom right*/
+      [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
+      /* Cross Bottom left - Top right*/
+      [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ],
+    ];
+
+    const BoardDiv = document.querySelector(".game-board");
+    const rows = BoardDiv.children;
+
+    let oPositions = [];
+    let xPositions = [];
+
+    for (const row of rows) {
+      for (const positionDiv of row.children) {
+        if (positionDiv.textContent === "O") {
+          oPositions.push([
+            parseInt(positionDiv.dataset.row),
+            parseInt(positionDiv.dataset.col),
+          ]);
+        } else if (positionDiv.textContent === "X") {
+          xPositions.push([
+            parseInt(positionDiv.dataset.row),
+            parseInt(positionDiv.dataset.col),
+          ]);
+        }
+      }
+    }
+
+    for (const winPositionArray of winPositions) {
+      for (const [index, position] of oPositions.entries()) {
+        let editedArray = oPositions.slice(0, index + 1);
+        if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
+          isGameOver = true;
+          winner = player1;
+          console.log("O wins");
+        }
+      }
+      for (const [index, position] of xPositions.entries()) {
+        let editedArray = xPositions.slice(0, index + 1);
+        if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
+          isGameOver = true;
+          winner = player2;
+          console.log("X wins");
+        }
+      }
     }
   };
 
   return {
-    currentPlayer,
     placeMarker,
   };
 })();
@@ -86,4 +183,5 @@ function playerFactory(name, marker) {
     marker,
   };
 }
+
 gameBoard.renderGameBoard();
