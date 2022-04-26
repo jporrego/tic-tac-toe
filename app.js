@@ -33,6 +33,7 @@ const gameBoard = (() => {
 
   const fillPosition = (position, marker) => {
     position.textContent = marker;
+    position.classList.add(marker.toLowerCase());
   };
 
   return {
@@ -75,14 +76,9 @@ const gameController = (() => {
     }
   };
 
+  /* ----------------- REVISIT LOGIC -----------------*/
   const checkGameOver = () => {
     const winPositions = [
-      [
-        [0, 1],
-        [1, 0],
-        [1, 2],
-        [2, 1],
-      ],
       /* Row 1 */
       [
         [0, 0],
@@ -157,25 +153,36 @@ const gameController = (() => {
 
     for (const winPositionArray of winPositions) {
       for (const [index, position] of oPositions.entries()) {
-        let editedArray = oPositions.slice(0, index + 1);
+        let editedArray = oPositions.slice(0);
+
+        if (editedArray.length === 4) {
+          editedArray.splice(index + 1, 1);
+          console.log("cureYZI");
+        } /*
+        if (editedArray.length === 5) {
+          editedArray.splice(index + 1, 2);
+        }*/
+
+        console.log(JSON.stringify(editedArray));
+        //console.log(JSON.stringify(oPositions));
         if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
           isGameOver = true;
           winner = player1;
         }
-      }
+      } /*/
       for (const [index, position] of xPositions.entries()) {
-        let editedArray = xPositions.slice(0, index + 1);
+        let editedArray = xPositions.splice(index, 1);
         if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
           isGameOver = true;
           winner = player2;
         }
-      }
+      }*/
     }
 
     let suc;
     console.log(suc);
     if (isGameOver) {
-      document.querySelector(".winner").textContent = `Winner: ${winner.name}`;
+      displayController.showWinner(winner.name, winner.marker);
     }
   };
 
@@ -185,23 +192,33 @@ const gameController = (() => {
 })();
 
 const displayController = (() => {
+  /* --- Module that takes care of displaying --- */
+
   /* --- Variables --- */
   const currentPlayerDiv = document.querySelector(".current-player");
+  const winnerDiv = document.querySelector(".winner");
 
   /* --- Functions --- */
 
   /* --- ShowCurrentPlayer --- */
   const showCurrentPlayer = (currentPlayerName, currentPlayerMarker) => {
-    currentPlayerDiv.textContent = `${currentPlayerName}: ${currentPlayerMarker}`;
+    currentPlayerDiv.textContent = `${currentPlayerName} (${currentPlayerMarker})`;
   };
 
   /* --- ClearCurrentPlayer --- */
   const clearCurrentPlayer = () => {
     currentPlayerDiv.textContent = "";
   };
+
+  /* --- ShowWinner --- */
+  const showWinner = (winnerName, winnerMarker) => {
+    winnerDiv.textContent = `Winner: ${winnerName} (${winnerMarker})`;
+  };
+
   return {
     showCurrentPlayer,
     clearCurrentPlayer,
+    showWinner,
   };
 })();
 

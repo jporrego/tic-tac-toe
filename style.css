@@ -1,15 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 :root {
-    --bg-light: #2e2d5a;
-    --bg-dark: #1b1c30;
-    --purple: #5046ba;
-    --white: #F1F5FB;
-    --white-darker: #c6c8d6;
+    --bg-light: #091933;
+    --bg-dark: #0b121a;
+    --red: #ef233c;
+    --pink: #FF00FE;
+    --pink-dark: #711c91;
+    --cyan: #00FFFE;
+    --cyan-dark: #0a2d5f;
+    --white: #edf2f4;
     --yellow: #ffc540;
-    --grey-dark: #31334c;
-    --grey: #6f7084;
-    --grey-light: #a4aab6;
+    --grey: #8d99ae;
     /* Fonts */
     --font-primary: 'Permanent Marker', cursive;
     /* Utilities */
@@ -47,15 +48,16 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    gap: 1rem;
     height: 30rem;
     width: 30rem;
-    background-color: var(--bg-light);
     user-select: none;
 }
 
 .row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
 
 }
 
@@ -63,16 +65,33 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--bg-light);
+    background-color: var(--cyan-dark);
+    border: 1px solid rgb(29, 50, 59);
     width: 100%;
     height: 100%;
-    border: solid 1px var(--purple);
     transition: all .1s ease-out;
     cursor: pointer;
+    z-index: 10;
 }
 
+.o {
+    color: var(--cyan);
+    box-shadow: 120px 80px 500px 10px var(--cyan);
+    border: 1px solid var(--cyan);
+    z-index: 2;
+}
+
+.x {
+    color: var(--pink);
+    z-index: 2;
+    box-shadow: 120px 80px 500px 10px var(--pink);
+    border: 1px solid var(--pink);
+}
+
+
+
 .row__position:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.5);
 }
 
 .row__position:active {
