@@ -9,7 +9,7 @@ const gameBoard = (() => {
   const initializeGameBoard = () => {
     /* ----- Function to render the game board ----- 
     - Adds the corresponding coordinates to each positon
-    - Adds the an event listender to each position 
+    - Adds a click event listender to each position that calls placeMarker()
     */
 
     const BoardDiv = document.querySelector(".game-board");
@@ -29,6 +29,11 @@ const gameBoard = (() => {
     }
   };
 
+  const clearGameBoard = () => {
+    board2dArray = board2dArray.map((row) => ["", "", ""]);
+    renderGameBoard();
+  };
+
   const renderGameBoard = () => {
     const rows = document.querySelector(".game-board").children;
     for (const row of rows) {
@@ -37,6 +42,9 @@ const gameBoard = (() => {
         if (marker !== "") {
           cell.textContent = marker;
           cell.classList.add(marker.toLowerCase());
+        } else {
+          cell.textContent = "";
+          cell.classList.remove("o", "x");
         }
       }
     }
@@ -50,6 +58,7 @@ const gameBoard = (() => {
   return {
     initializeGameBoard,
     fillPosition,
+    clearGameBoard,
   };
 })();
 
@@ -224,6 +233,7 @@ const gameController = (() => {
       }
     }
 
+    /* --- Tie condition --- */
     if (oPositions.length + xPositions.length === 9 && !isGameOver) {
       isGameOver = true;
       displayController.showTie();
@@ -235,8 +245,21 @@ const gameController = (() => {
     displayController.showWinner(winner, matchCoordinates, cells);
   };
 
+  const setupEventListeners = () => {
+    document
+      .querySelector(".btn-restart")
+      .addEventListener("click", restartGame);
+  };
+  const restartGame = () => {
+    currentPlayer = player1;
+    isGameOver = false;
+    gameBoard.clearGameBoard();
+    displayController.resetVisuals();
+  };
+
   return {
     placeMarker,
+    setupEventListeners,
   };
 })();
 
@@ -253,9 +276,9 @@ const displayController = (() => {
   const showCurrentPlayer = (currentPlayerName, currentPlayerMarker) => {
     currentPlayerDiv.textContent = `${currentPlayerName} (${currentPlayerMarker})`;
     if (currentPlayerName === "Player 1") {
-      currentPlayerDiv.className = "player1-colors";
+      currentPlayerDiv.className = "current-player player1-colors";
     } else {
-      currentPlayerDiv.className = "player2-colors";
+      currentPlayerDiv.className = "current-player player2-colors";
     }
   };
 
@@ -293,6 +316,22 @@ const displayController = (() => {
 
   const showTie = () => {
     currentPlayerDiv.textContent = `Tie!`;
+    console.log(currentPlayerDiv);
+  };
+
+  const resetVisuals = () => {
+    /* --- Reset cell class --- */
+    const cells = document.querySelectorAll(".row__position");
+    for (const cell of cells) {
+      cell.className = "row__position";
+    }
+
+    /* --- Reset info texts--- */
+    winnerDiv.textContent = ``;
+    winnerDiv.className = "winner-text";
+
+    currentPlayerDiv.textContent = "Player 1 (O)";
+    currentPlayerDiv.className = "current-player player1-colors";
   };
 
   return {
@@ -300,6 +339,7 @@ const displayController = (() => {
     clearCurrentPlayer,
     showWinner,
     showTie,
+    resetVisuals,
   };
 })();
 
@@ -311,3 +351,4 @@ function playerFactory(name, marker) {
 }
 
 gameBoard.initializeGameBoard();
+gameController.setupEventListeners();

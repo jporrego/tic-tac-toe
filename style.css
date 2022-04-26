@@ -10,7 +10,7 @@
     --cyan-dark: #3b0c70;
     --white: #edf2f4;
     --yellow: #ffc540;
-    --grey: #8d99ae;
+    --grey: #1b2030;
     /* Fonts */
     --font-primary: 'Permanent Marker', cursive;
     /* Utilities */
@@ -126,4 +126,45 @@ body {
 .player2-colors {
     color: var(--pink);
     text-shadow: 0px 5px 2px black;
+}
+
+.btn-restart {
+    color: var(--yellow);
+    font-size: 2rem;
+    padding: 0rem 1.5rem;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.1s ease-out;
+}
+
+.btn-restart:hover {
+    transform: scale(1.1);
+}
+
+.player-names {
+    margin: 1rem 0rem 3rem 0rem;
+    width: 30rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+input {
+    background-color: var(--grey);
+    border: none;
+    color: var(--white);
+    font-family: var(--font-primary);
+    padding: 0.25rem 1rem;
+    width: 45%;
+}
+
+input:focus {
+    outline: none;
+}
+
+#p1-name, #p1-name::placeholder {
+    color: var(--cyan);
+}
+
+#p2-name, #p2-name::placeholder {
+    color: var(--pink);
 }
