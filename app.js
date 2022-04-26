@@ -123,7 +123,7 @@ const gameController = (() => {
 
   const changeTurn = () => {
     if (!isGameOver) {
-      if (currentPlayer.name === "Player 1") {
+      if (currentPlayer.getMarker() === "O") {
         currentPlayer = player2;
       } else {
         currentPlayer = player1;
@@ -133,13 +133,13 @@ const gameController = (() => {
 
   const placeMarker = (e) => {
     if (e.target.textContent === "" && !isGameOver) {
-      gameBoard.fillPosition(e.target, currentPlayer.marker);
+      gameBoard.fillPosition(e.target, currentPlayer.getMarker());
       changeTurn();
       checkGameOver();
       if (!isGameOver)
         displayController.showCurrentPlayer(
           currentPlayer.getName(),
-          currentPlayer.marker
+          currentPlayer.getMarker()
         );
       else {
         if (winner != undefined) {
@@ -254,7 +254,7 @@ const gameController = (() => {
     if (!isGameOver) {
       displayController.showCurrentPlayer(
         currentPlayer.getName(),
-        currentPlayer.marker
+        currentPlayer.getMarker()
       );
     }
   };
@@ -309,9 +309,9 @@ const displayController = (() => {
 
   /* --- ShowWinner --- */
   const showWinner = (player, matchCoordinates, cells) => {
-    winnerDiv.textContent = `Winner: ${player.getName()} (${player.marker})`;
+    winnerDiv.textContent = `Winner: ${player.getName()} (${player.getMarker()})`;
 
-    if (player.marker === "O") {
+    if (player.getMarker() === "O") {
       winnerDiv.classList.add("player1-colors");
     } else {
       winnerDiv.classList.add("player2-colors");
@@ -324,7 +324,7 @@ const displayController = (() => {
           cell.dataset.row == coordinate[0] &&
           cell.dataset.col == coordinate[1]
         ) {
-          if (player.name === "Player 1") {
+          if (player.getMarker() === "O") {
             cell.classList.add("o-winner");
           } else {
             cell.classList.add("x-winner");
@@ -371,11 +371,12 @@ function playerFactory(name, marker) {
   const setName = (newName) => {
     name = newName;
   };
+
+  const getMarker = () => marker;
   return {
-    name,
-    marker,
     setName,
     getName,
+    getMarker,
   };
 }
 
