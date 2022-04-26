@@ -89,7 +89,7 @@ body {
     box-shadow: 120px 80px 500px 10px var(--cyan);
     border: 1px solid var(--cyan);
     z-index: 2;
-    filter: blur(0px);
+    transition: all .3s ease-out;
 
 }
 
@@ -98,8 +98,26 @@ body {
     z-index: 2;
     box-shadow: 120px 80px 500px 10px var(--pink);
     border: 1px solid var(--pink);
-    filter: blur(0px);
+    transition: all .3s ease-out;
 }
+
+.o-winner {
+    color: rgb(255, 255, 255);
+    background-color: var(--cyan);
+    transform: rotate(90deg);
+    font-size: 5rem;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, .3);
+}
+
+.x-winner {
+    color: white;
+    background-color: var(--pink);
+    transform: rotate(90deg);
+    font-size: 5rem;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 1);
+}
+
 
 
 

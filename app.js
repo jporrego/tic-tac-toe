@@ -128,6 +128,12 @@ const gameController = (() => {
 
   const checkGameOver = () => {
     const rows = document.querySelector(".game-board").children;
+    let cells = [];
+    for (const row of rows) {
+      for (const cell of row.children) {
+        cells.push(cell);
+      }
+    }
 
     let oPositions = [];
     let xPositions = [];
@@ -136,19 +142,17 @@ const gameController = (() => {
       ---- Loop through each cell of each row. 
       ---- If it's been marked, save it's index to the corresponding array 
     */
-    for (const row of rows) {
-      for (const positionDiv of row.children) {
-        if (positionDiv.textContent === "O") {
-          oPositions.push([
-            parseInt(positionDiv.dataset.row),
-            parseInt(positionDiv.dataset.col),
-          ]);
-        } else if (positionDiv.textContent === "X") {
-          xPositions.push([
-            parseInt(positionDiv.dataset.row),
-            parseInt(positionDiv.dataset.col),
-          ]);
-        }
+    for (const cell of cells) {
+      if (cell.textContent === "O") {
+        oPositions.push([
+          parseInt(cell.dataset.row),
+          parseInt(cell.dataset.col),
+        ]);
+      } else if (cell.textContent === "X") {
+        xPositions.push([
+          parseInt(cell.dataset.row),
+          parseInt(cell.dataset.col),
+        ]);
       }
     }
 
@@ -158,41 +162,101 @@ const gameController = (() => {
       ---- If there's 3 matches, a player won.
     */
 
-    if (oPositions.length >= 3) {
+    let matchCoordinates = [];
+
+    if (oPositions.length >= 3 || oPositions.length >= !isGameOver) {
       for (const winPositionArray of winPositions) {
         let matchCount = 0;
+        matchCoordinates = [];
         for (const i of winPositionArray) {
           for (const [index, position] of oPositions.entries()) {
             if (JSON.stringify(i) === JSON.stringify(position)) {
               matchCount++;
+              matchCoordinates.push(position);
             }
           }
           if (matchCount === 3) {
             isGameOver = true;
             winner = player1;
+            console.log(matchCoordinates);
+            break;
           }
+        }
+        if (isGameOver) {
+          break;
         }
       }
     }
-    if (xPositions.length >= 3) {
+
+    /*
+    if (oPositions.length >= 3 && !isGameOver) {
       for (const winPositionArray of winPositions) {
         let matchCount = 0;
+        matchCoordinates = [];
+        for (const i of winPositionArray) {
+          for (const [index, position] of oPositions.entries()) {
+            if (JSON.stringify(i) === JSON.stringify(position)) {
+              matchCount++;
+              matchCoordinates.push(position);
+            }
+          }
+          if (matchCount === 3) {
+            isGameOver = true;
+            winner = player1;
+            console.log(matchCoordinates);
+            break;
+          }
+        }
+        if (isGameOver) {
+          break;
+        }
+      }
+    }
+
+    if (xPositions.length >= 3 && !isGameOver) {
+      for (const winPositionArray of winPositions) {
+        let matchCount = 0;
+        matchCoordinates = [];
         for (const i of winPositionArray) {
           for (const [index, position] of xPositions.entries()) {
             if (JSON.stringify(i) === JSON.stringify(position)) {
               matchCount++;
+              matchCoordinates.push(position);
             }
           }
           if (matchCount === 3) {
             isGameOver = true;
             winner = player2;
+            console.log(matchCoordinates);
+            break;
           }
         }
+        if (isGameOver) {
+          break;
+        }
       }
-    }
+    }*/
 
     if (isGameOver) {
       displayController.showWinner(winner.name, winner.marker);
+
+      /* --- win winner CSS class to the corresponding cells --- */
+      console.log(matchCoordinates);
+      for (const coordinate of matchCoordinates) {
+        for (const cell of cells) {
+          if (
+            cell.dataset.row == coordinate[0] &&
+            cell.dataset.col == coordinate[1]
+          ) {
+            if (winner === player1) {
+              cell.classList.add("o-winner");
+              console.log(winner);
+            } else {
+              cell.classList.add("x-winner");
+            }
+          }
+        }
+      }
     }
   };
 
