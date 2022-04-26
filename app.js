@@ -113,10 +113,12 @@ const gameController = (() => {
   let currentPlayer = player1;
 
   const changeTurn = () => {
-    if (currentPlayer.name === "Player 1") {
-      currentPlayer = player2;
-    } else {
-      currentPlayer = player1;
+    if (!isGameOver) {
+      if (currentPlayer.name === "Player 1") {
+        currentPlayer = player2;
+      } else {
+        currentPlayer = player1;
+      }
     }
   };
 
@@ -131,7 +133,9 @@ const gameController = (() => {
           currentPlayer.marker
         );
       else {
-        displayController.clearCurrentPlayer();
+        if (winner != undefined) {
+          displayController.clearCurrentPlayer();
+        }
       }
     }
   };
@@ -219,6 +223,11 @@ const gameController = (() => {
         }
       }
     }
+
+    if (oPositions.length + xPositions.length === 9 && !isGameOver) {
+      isGameOver = true;
+      displayController.showTie();
+    }
   };
 
   const setWinner = (player, matchCoordinates, cells) => {
@@ -282,10 +291,15 @@ const displayController = (() => {
     }
   };
 
+  const showTie = () => {
+    currentPlayerDiv.textContent = `Tie!`;
+  };
+
   return {
     showCurrentPlayer,
     clearCurrentPlayer,
     showWinner,
+    showTie,
   };
 })();
 
