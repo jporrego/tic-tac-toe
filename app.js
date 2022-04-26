@@ -138,7 +138,7 @@ const gameController = (() => {
       checkGameOver();
       if (!isGameOver)
         displayController.showCurrentPlayer(
-          currentPlayer.name,
+          currentPlayer.getName(),
           currentPlayer.marker
         );
       else {
@@ -245,10 +245,28 @@ const gameController = (() => {
     displayController.showWinner(winner, matchCoordinates, cells);
   };
 
+  const changePlayerNames = (e) => {
+    if (e.target.id === "p1-name") {
+      player1.setName(e.target.value);
+    } else {
+      player2.setName(e.target.value);
+    }
+    displayController.showCurrentPlayer(
+      currentPlayer.getName(),
+      currentPlayer.marker
+    );
+  };
+
   const setupEventListeners = () => {
+    /* --- Restart button --- */
     document
       .querySelector(".btn-restart")
       .addEventListener("click", restartGame);
+
+    /* --- Player name inputs --- */
+    document.querySelectorAll(".p-name-input").forEach((div) => {
+      div.addEventListener("input", changePlayerNames);
+    });
   };
   const restartGame = () => {
     currentPlayer = player1;
@@ -275,7 +293,7 @@ const displayController = (() => {
   /* --- ShowCurrentPlayer --- */
   const showCurrentPlayer = (currentPlayerName, currentPlayerMarker) => {
     currentPlayerDiv.textContent = `${currentPlayerName} (${currentPlayerMarker})`;
-    if (currentPlayerName === "Player 1") {
+    if (currentPlayerMarker === "O") {
       currentPlayerDiv.className = "current-player player1-colors";
     } else {
       currentPlayerDiv.className = "current-player player2-colors";
@@ -315,7 +333,7 @@ const displayController = (() => {
   };
 
   const showTie = () => {
-    currentPlayerDiv.textContent = `Tie!`;
+    currentPlayerDiv.textContent = "Tie!";
     console.log(currentPlayerDiv);
   };
 
@@ -331,7 +349,7 @@ const displayController = (() => {
     winnerDiv.className = "winner-text";
 
     currentPlayerDiv.textContent = "Player 1 (O)";
-    currentPlayerDiv.className = "current-player player1-colors";
+    currentPlayerDiv.className = "current-player";
   };
 
   return {
@@ -344,9 +362,18 @@ const displayController = (() => {
 })();
 
 function playerFactory(name, marker) {
+  name = name;
+  marker = marker;
+
+  const getName = () => name;
+  const setName = (newName) => {
+    name = newName;
+  };
   return {
     name,
     marker,
+    setName,
+    getName,
   };
 }
 
