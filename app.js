@@ -64,7 +64,7 @@ const gameController = (() => {
     if (e.target.textContent === "" && !isGameOver) {
       gameBoard.fillPosition(e.target, currentPlayer.marker);
       changeTurn();
-      checkGameOver();
+      checkGameOver2();
       if (!winner)
         displayController.showCurrentPlayer(
           currentPlayer.name,
@@ -77,6 +77,7 @@ const gameController = (() => {
   };
 
   /* ----------------- REVISIT LOGIC -----------------*/
+  /* --- Make it so the winning function checks if it contains 3 equal sub array to fix it, even if it has 4 or 5 */
   const checkGameOver = () => {
     const winPositions = [
       /* Row 1 */
@@ -181,6 +182,118 @@ const gameController = (() => {
 
     let suc;
     console.log(suc);
+    if (isGameOver) {
+      displayController.showWinner(winner.name, winner.marker);
+    }
+  };
+
+  const checkGameOver2 = () => {
+    const winPositions = [
+      /* Row 1 */
+      [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ],
+      /* Row 2 */
+      [
+        [1, 0],
+        [1, 1],
+        [1, 2],
+      ],
+      /* Row 3 */
+      [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+      ],
+      /* Column 1 */
+      [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+      ],
+      /* Column 2*/
+      [
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      /* Column 3*/
+      [
+        [0, 2],
+        [1, 2],
+        [2, 2],
+      ],
+      /* Cross Top left - Bottom right*/
+      [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
+      /* Cross Bottom left - Top right*/
+      [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ],
+    ];
+
+    const BoardDiv = document.querySelector(".game-board");
+    const rows = BoardDiv.children;
+
+    let oPositions = [];
+    let xPositions = [];
+
+    for (const row of rows) {
+      for (const positionDiv of row.children) {
+        if (positionDiv.textContent === "O") {
+          oPositions.push([
+            parseInt(positionDiv.dataset.row),
+            parseInt(positionDiv.dataset.col),
+          ]);
+        } else if (positionDiv.textContent === "X") {
+          xPositions.push([
+            parseInt(positionDiv.dataset.row),
+            parseInt(positionDiv.dataset.col),
+          ]);
+        }
+      }
+    }
+
+    if (oPositions.length >= 3) {
+      for (const winPositionArray of winPositions) {
+        let matchCount = 0;
+        for (const i of winPositionArray) {
+          for (const [index, position] of oPositions.entries()) {
+            if (JSON.stringify(i) === JSON.stringify(position)) {
+              matchCount++;
+            }
+          }
+          if (matchCount === 3) {
+            isGameOver = true;
+            winner = player1;
+          }
+        }
+      }
+    }
+    if (xPositions.length >= 3) {
+      for (const winPositionArray of winPositions) {
+        let matchCount = 0;
+        for (const i of winPositionArray) {
+          for (const [index, position] of xPositions.entries()) {
+            if (JSON.stringify(i) === JSON.stringify(position)) {
+              matchCount++;
+            }
+          }
+          if (matchCount === 3) {
+            isGameOver = true;
+            winner = player2;
+          }
+        }
+      }
+    }
+
     if (isGameOver) {
       displayController.showWinner(winner.name, winner.marker);
     }

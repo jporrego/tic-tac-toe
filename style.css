@@ -7,7 +7,7 @@
     --pink: #FF00FE;
     --pink-dark: #711c91;
     --cyan: #00FFFE;
-    --cyan-dark: #0a2d5f;
+    --cyan-dark: #3b0c70;
     --white: #edf2f4;
     --yellow: #ffc540;
     --grey: #8d99ae;
@@ -65,13 +65,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--cyan-dark);
+    background-color: black;
     border: 1px solid rgb(29, 50, 59);
     width: 100%;
     height: 100%;
     transition: all .1s ease-out;
     cursor: pointer;
     z-index: 10;
+
 }
 
 .o {
@@ -88,12 +89,14 @@ body {
     border: 1px solid var(--pink);
 }
 
-
-
 .row__position:hover {
     filter: brightness(1.5);
 }
 
 .row__position:active {
     filter: brightness(.85);
+}
+
+.winner, .current-player {
+    color: var(--cyan);
 }
