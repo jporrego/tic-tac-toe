@@ -1,0 +1,46 @@
+if (!isGameOver) {
+      for (const winPositionArray of winPositions) {
+        matchCount = 0;
+        matchCoordinates = [];
+        for (const winPos of winPositionArray) {
+          if (oPositions.length >= 3) {
+            for (const [index, position] of oPositions.entries()) {
+              if (JSON.stringify(winPos) === JSON.stringify(position)) {
+                matchCount++;
+                matchCoordinates.push(position);
+              }
+            }
+            if (matchCount === 3) {
+              isGameOver = true;
+              winner = player1;
+              console.log(matchCoordinates);
+              break;
+            }
+          }
+        }
+        if (isGameOver) {
+          break;
+        }
+        matchCount = 0;
+        matchCoordinates = [];
+        for (const winPos of winPositionArray) {
+          if (xPositions.length >= 3) {
+            for (const [index, position] of xPositions.entries()) {
+              if (JSON.stringify(winPos) === JSON.stringify(position)) {
+                matchCount++;
+                matchCoordinates.push(position);
+              }
+            }
+            if (matchCount === 3) {
+              isGameOver = true;
+              winner = player2;
+              console.log(matchCoordinates);
+              break;
+            }
+          }
+        }
+        if (isGameOver) {
+          break;
+        }
+      }
+    }

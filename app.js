@@ -6,9 +6,7 @@ const gameBoard = (() => {
     ["", "", ""],
   ];
 
-  const getBoard2dArray = () => board2dArray;
-
-  const renderGameBoard = () => {
+  const initializeGameBoard = () => {
     /* ----- Function to render the game board ----- 
     - Adds the corresponding coordinates to each positon
     - Adds the an event listender to each position 
@@ -20,26 +18,38 @@ const gameBoard = (() => {
     let row = 0;
     for (const rowDiv of boardRows) {
       let col = 0;
-      for (const positionDiv of rowDiv.children) {
-        positionDiv.addEventListener("click", gameController.placeMarker);
-        positionDiv.textContent = board2dArray[row][col];
-        positionDiv.dataset.row = row;
-        positionDiv.dataset.col = col;
+      for (const cellDiv of rowDiv.children) {
+        cellDiv.addEventListener("click", gameController.placeMarker);
+        cellDiv.textContent = board2dArray[row][col];
+        cellDiv.dataset.row = row;
+        cellDiv.dataset.col = col;
         col++;
       }
       row++;
     }
   };
 
+  const renderGameBoard = () => {
+    const rows = document.querySelector(".game-board").children;
+    for (const row of rows) {
+      for (const cell of row.children) {
+        marker = board2dArray[cell.dataset.row][cell.dataset.col];
+        if (marker !== "") {
+          cell.textContent = marker;
+          cell.classList.add(marker.toLowerCase());
+        }
+      }
+    }
+  };
+
   const fillPosition = (position, marker) => {
-    position.textContent = marker;
-    position.classList.add(marker.toLowerCase());
+    board2dArray[position.dataset.row][position.dataset.col] = marker;
+    renderGameBoard();
   };
 
   return {
-    renderGameBoard,
+    initializeGameBoard,
     fillPosition,
-    getBoard2dArray,
   };
 })();
 
@@ -115,7 +125,7 @@ const gameController = (() => {
       gameBoard.fillPosition(e.target, currentPlayer.marker);
       changeTurn();
       checkGameOver();
-      if (!winner)
+      if (!isGameOver)
         displayController.showCurrentPlayer(
           currentPlayer.name,
           currentPlayer.marker
@@ -162,33 +172,7 @@ const gameController = (() => {
       ---- If there's 3 matches, a player won.
     */
 
-    let matchCoordinates = [];
-
-    if (oPositions.length >= 3 || oPositions.length >= !isGameOver) {
-      for (const winPositionArray of winPositions) {
-        let matchCount = 0;
-        matchCoordinates = [];
-        for (const i of winPositionArray) {
-          for (const [index, position] of oPositions.entries()) {
-            if (JSON.stringify(i) === JSON.stringify(position)) {
-              matchCount++;
-              matchCoordinates.push(position);
-            }
-          }
-          if (matchCount === 3) {
-            isGameOver = true;
-            winner = player1;
-            console.log(matchCoordinates);
-            break;
-          }
-        }
-        if (isGameOver) {
-          break;
-        }
-      }
-    }
-
-    /*
+    /* --- Check if O won --- */
     if (oPositions.length >= 3 && !isGameOver) {
       for (const winPositionArray of winPositions) {
         let matchCount = 0;
@@ -202,8 +186,7 @@ const gameController = (() => {
           }
           if (matchCount === 3) {
             isGameOver = true;
-            winner = player1;
-            console.log(matchCoordinates);
+            setWinner(player1, matchCoordinates, cells);
             break;
           }
         }
@@ -213,6 +196,7 @@ const gameController = (() => {
       }
     }
 
+    /* --- Check if X won --- */
     if (xPositions.length >= 3 && !isGameOver) {
       for (const winPositionArray of winPositions) {
         let matchCount = 0;
@@ -226,8 +210,7 @@ const gameController = (() => {
           }
           if (matchCount === 3) {
             isGameOver = true;
-            winner = player2;
-            console.log(matchCoordinates);
+            setWinner(player2, matchCoordinates, cells);
             break;
           }
         }
@@ -235,29 +218,12 @@ const gameController = (() => {
           break;
         }
       }
-    }*/
-
-    if (isGameOver) {
-      displayController.showWinner(winner.name, winner.marker);
-
-      /* --- win winner CSS class to the corresponding cells --- */
-      console.log(matchCoordinates);
-      for (const coordinate of matchCoordinates) {
-        for (const cell of cells) {
-          if (
-            cell.dataset.row == coordinate[0] &&
-            cell.dataset.col == coordinate[1]
-          ) {
-            if (winner === player1) {
-              cell.classList.add("o-winner");
-              console.log(winner);
-            } else {
-              cell.classList.add("x-winner");
-            }
-          }
-        }
-      }
     }
+  };
+
+  const setWinner = (player, matchCoordinates, cells) => {
+    winner = player;
+    displayController.showWinner(winner, matchCoordinates, cells);
   };
 
   return {
@@ -270,13 +236,18 @@ const displayController = (() => {
 
   /* ------------- Variables ------------- */
   const currentPlayerDiv = document.querySelector(".current-player");
-  const winnerDiv = document.querySelector(".winner");
+  const winnerDiv = document.querySelector(".winner-text");
 
   /* ------------- Functions ------------- */
 
   /* --- ShowCurrentPlayer --- */
   const showCurrentPlayer = (currentPlayerName, currentPlayerMarker) => {
     currentPlayerDiv.textContent = `${currentPlayerName} (${currentPlayerMarker})`;
+    if (currentPlayerName === "Player 1") {
+      currentPlayerDiv.className = "player1-colors";
+    } else {
+      currentPlayerDiv.className = "player2-colors";
+    }
   };
 
   /* --- ClearCurrentPlayer --- */
@@ -285,8 +256,30 @@ const displayController = (() => {
   };
 
   /* --- ShowWinner --- */
-  const showWinner = (winnerName, winnerMarker) => {
-    winnerDiv.textContent = `Winner: ${winnerName} (${winnerMarker})`;
+  const showWinner = (player, matchCoordinates, cells) => {
+    winnerDiv.textContent = `Winner: ${player.name} (${player.marker})`;
+
+    if (player.name === "Player 1") {
+      winnerDiv.classList.add("player1-colors");
+    } else {
+      winnerDiv.classList.add("player2-colors");
+    }
+
+    /* --- Add winner CSS class to the corresponding cells --- */
+    for (const coordinate of matchCoordinates) {
+      for (const cell of cells) {
+        if (
+          cell.dataset.row == coordinate[0] &&
+          cell.dataset.col == coordinate[1]
+        ) {
+          if (player.name === "Player 1") {
+            cell.classList.add("o-winner");
+          } else {
+            cell.classList.add("x-winner");
+          }
+        }
+      }
+    }
   };
 
   return {
@@ -303,4 +296,4 @@ function playerFactory(name, marker) {
   };
 }
 
-gameBoard.renderGameBoard();
+gameBoard.initializeGameBoard();
