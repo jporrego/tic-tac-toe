@@ -251,10 +251,12 @@ const gameController = (() => {
     } else {
       player2.setName(e.target.value);
     }
-    displayController.showCurrentPlayer(
-      currentPlayer.getName(),
-      currentPlayer.marker
-    );
+    if (!isGameOver) {
+      displayController.showCurrentPlayer(
+        currentPlayer.getName(),
+        currentPlayer.marker
+      );
+    }
   };
 
   const setupEventListeners = () => {
@@ -272,7 +274,7 @@ const gameController = (() => {
     currentPlayer = player1;
     isGameOver = false;
     gameBoard.clearGameBoard();
-    displayController.resetVisuals();
+    displayController.resetVisuals(player1);
   };
 
   return {
@@ -307,9 +309,9 @@ const displayController = (() => {
 
   /* --- ShowWinner --- */
   const showWinner = (player, matchCoordinates, cells) => {
-    winnerDiv.textContent = `Winner: ${player.name} (${player.marker})`;
+    winnerDiv.textContent = `Winner: ${player.getName()} (${player.marker})`;
 
-    if (player.name === "Player 1") {
+    if (player.marker === "O") {
       winnerDiv.classList.add("player1-colors");
     } else {
       winnerDiv.classList.add("player2-colors");
@@ -337,7 +339,7 @@ const displayController = (() => {
     console.log(currentPlayerDiv);
   };
 
-  const resetVisuals = () => {
+  const resetVisuals = (player1) => {
     /* --- Reset cell class --- */
     const cells = document.querySelectorAll(".row__position");
     for (const cell of cells) {
@@ -348,8 +350,8 @@ const displayController = (() => {
     winnerDiv.textContent = ``;
     winnerDiv.className = "winner-text";
 
-    currentPlayerDiv.textContent = "Player 1 (O)";
-    currentPlayerDiv.className = "current-player";
+    currentPlayerDiv.textContent = `${player1.getName()} (O)`;
+    currentPlayerDiv.className = "current-player player1-colors";
   };
 
   return {
