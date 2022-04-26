@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 :root {
-    --bg-light: #091933;
-    --bg-dark: #0b121a;
+    --bg-light: #030a0a;
+    --bg-dark: #070d13;
     --red: #ef233c;
     --pink: #FF00FE;
     --pink-dark: #711c91;
@@ -65,14 +65,23 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: black;
-    border: 1px solid rgb(29, 50, 59);
+    background-color: var(--bg-light);
+    border: 1px solid rgb(170, 170, 170);
     width: 100%;
     height: 100%;
     transition: all .1s ease-out;
     cursor: pointer;
     z-index: 10;
+    filter: brightness(1) blur(0px);
+    transition: all .2s ease-out;
+}
 
+.row__position:hover {
+    filter: brightness(1.5) blur(0px);
+}
+
+.row__position:active {
+    filter: brightness(.85);
 }
 
 .o {
@@ -80,6 +89,8 @@ body {
     box-shadow: 120px 80px 500px 10px var(--cyan);
     border: 1px solid var(--cyan);
     z-index: 2;
+    filter: blur(0px);
+
 }
 
 .x {
@@ -87,16 +98,13 @@ body {
     z-index: 2;
     box-shadow: 120px 80px 500px 10px var(--pink);
     border: 1px solid var(--pink);
+    filter: blur(0px);
 }
 
-.row__position:hover {
-    filter: brightness(1.5);
-}
 
-.row__position:active {
-    filter: brightness(.85);
-}
 
 .winner, .current-player {
     color: var(--cyan);
+    text-shadow: 0px 5px 2px black;
+
 }

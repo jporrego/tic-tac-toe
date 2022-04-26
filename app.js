@@ -44,6 +44,56 @@ const gameBoard = (() => {
 })();
 
 const gameController = (() => {
+  const winPositions = [
+    /* Row 1 */
+    [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ],
+    /* Row 2 */
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+    ],
+    /* Row 3 */
+    [
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ],
+    /* Column 1 */
+    [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ],
+    /* Column 2*/
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ],
+    /* Column 3*/
+    [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+    ],
+    /* Cross Top left - Bottom right*/
+    [
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ],
+    /* Cross Bottom left - Top right*/
+    [
+      [0, 2],
+      [1, 1],
+      [2, 0],
+    ],
+  ];
   let isGameOver = false;
   let winner;
 
@@ -64,7 +114,7 @@ const gameController = (() => {
     if (e.target.textContent === "" && !isGameOver) {
       gameBoard.fillPosition(e.target, currentPlayer.marker);
       changeTurn();
-      checkGameOver2();
+      checkGameOver();
       if (!winner)
         displayController.showCurrentPlayer(
           currentPlayer.name,
@@ -76,66 +126,16 @@ const gameController = (() => {
     }
   };
 
-  /* ----------------- REVISIT LOGIC -----------------*/
-  /* --- Make it so the winning function checks if it contains 3 equal sub array to fix it, even if it has 4 or 5 */
   const checkGameOver = () => {
-    const winPositions = [
-      /* Row 1 */
-      [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-      ],
-      /* Row 2 */
-      [
-        [1, 0],
-        [1, 1],
-        [1, 2],
-      ],
-      /* Row 3 */
-      [
-        [2, 0],
-        [2, 1],
-        [2, 2],
-      ],
-      /* Column 1 */
-      [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-      ],
-      /* Column 2*/
-      [
-        [0, 1],
-        [1, 1],
-        [2, 1],
-      ],
-      /* Column 3*/
-      [
-        [0, 2],
-        [1, 2],
-        [2, 2],
-      ],
-      /* Cross Top left - Bottom right*/
-      [
-        [0, 0],
-        [1, 1],
-        [2, 2],
-      ],
-      /* Cross Bottom left - Top right*/
-      [
-        [0, 2],
-        [1, 1],
-        [2, 0],
-      ],
-    ];
-
-    const BoardDiv = document.querySelector(".game-board");
-    const rows = BoardDiv.children;
+    const rows = document.querySelector(".game-board").children;
 
     let oPositions = [];
     let xPositions = [];
 
+    /* 
+      ---- Loop through each cell of each row. 
+      ---- If it's been marked, save it's index to the corresponding array 
+    */
     for (const row of rows) {
       for (const positionDiv of row.children) {
         if (positionDiv.textContent === "O") {
@@ -152,114 +152,11 @@ const gameController = (() => {
       }
     }
 
-    for (const winPositionArray of winPositions) {
-      for (const [index, position] of oPositions.entries()) {
-        let editedArray = oPositions.slice(0);
-
-        if (editedArray.length === 4) {
-          editedArray.splice(index + 1, 1);
-          console.log("cureYZI");
-        } /*
-        if (editedArray.length === 5) {
-          editedArray.splice(index + 1, 2);
-        }*/
-
-        console.log(JSON.stringify(editedArray));
-        //console.log(JSON.stringify(oPositions));
-        if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
-          isGameOver = true;
-          winner = player1;
-        }
-      } /*/
-      for (const [index, position] of xPositions.entries()) {
-        let editedArray = xPositions.splice(index, 1);
-        if (JSON.stringify(winPositionArray) === JSON.stringify(editedArray)) {
-          isGameOver = true;
-          winner = player2;
-        }
-      }*/
-    }
-
-    let suc;
-    console.log(suc);
-    if (isGameOver) {
-      displayController.showWinner(winner.name, winner.marker);
-    }
-  };
-
-  const checkGameOver2 = () => {
-    const winPositions = [
-      /* Row 1 */
-      [
-        [0, 0],
-        [0, 1],
-        [0, 2],
-      ],
-      /* Row 2 */
-      [
-        [1, 0],
-        [1, 1],
-        [1, 2],
-      ],
-      /* Row 3 */
-      [
-        [2, 0],
-        [2, 1],
-        [2, 2],
-      ],
-      /* Column 1 */
-      [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-      ],
-      /* Column 2*/
-      [
-        [0, 1],
-        [1, 1],
-        [2, 1],
-      ],
-      /* Column 3*/
-      [
-        [0, 2],
-        [1, 2],
-        [2, 2],
-      ],
-      /* Cross Top left - Bottom right*/
-      [
-        [0, 0],
-        [1, 1],
-        [2, 2],
-      ],
-      /* Cross Bottom left - Top right*/
-      [
-        [0, 2],
-        [1, 1],
-        [2, 0],
-      ],
-    ];
-
-    const BoardDiv = document.querySelector(".game-board");
-    const rows = BoardDiv.children;
-
-    let oPositions = [];
-    let xPositions = [];
-
-    for (const row of rows) {
-      for (const positionDiv of row.children) {
-        if (positionDiv.textContent === "O") {
-          oPositions.push([
-            parseInt(positionDiv.dataset.row),
-            parseInt(positionDiv.dataset.col),
-          ]);
-        } else if (positionDiv.textContent === "X") {
-          xPositions.push([
-            parseInt(positionDiv.dataset.row),
-            parseInt(positionDiv.dataset.col),
-          ]);
-        }
-      }
-    }
+    /* 
+      ---- If either Os or Xs have been placed on 3 or more cells, compare with the winning positions. 
+      ---- For each coordinate that matches with those of a placed O or X, increase the matchCount for that specific winning position array.
+      ---- If there's 3 matches, a player won.
+    */
 
     if (oPositions.length >= 3) {
       for (const winPositionArray of winPositions) {
@@ -305,13 +202,13 @@ const gameController = (() => {
 })();
 
 const displayController = (() => {
-  /* --- Module that takes care of displaying --- */
+  /* ------------- Module that takes care of displaying information ------------- */
 
-  /* --- Variables --- */
+  /* ------------- Variables ------------- */
   const currentPlayerDiv = document.querySelector(".current-player");
   const winnerDiv = document.querySelector(".winner");
 
-  /* --- Functions --- */
+  /* ------------- Functions ------------- */
 
   /* --- ShowCurrentPlayer --- */
   const showCurrentPlayer = (currentPlayerName, currentPlayerMarker) => {
