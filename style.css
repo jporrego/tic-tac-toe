@@ -45,6 +45,18 @@ body {
     height: 100vh;
 }
 
+.title {
+    margin-bottom: 3rem;
+}
+
+.cyan {
+    color: var(--cyan);
+}
+
+.pink {
+    color: var(--pink);
+}
+
 .btn-restart {
     color: var(--white);
     font-size: 2rem;
